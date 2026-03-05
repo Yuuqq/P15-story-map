@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📰</text></svg>" />
+  <title>P15 地理新闻故事地图</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.css" crossorigin="anonymous" />
+    <link rel="stylesheet" href="../shared/design-tokens.css" />
+<link rel="stylesheet" href="./styles.css" />
+  <meta name="description" content="地理新闻故事地图。P15 地理新闻故事地图" />
+  <meta property="og:title" content="P15 地理新闻故事地图" />
+  <meta property="og:description" content="地理新闻故事地图 — 前端纯静态新闻工具" />
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://yuuqq.github.io/P15-story-map/" />
+</head>
+<body>
+  <main class="app">
+    <header class="hero">
+      <h1>地理新闻故事地图</h1>
+      <p>输入坐标点 JSON，自动生成新闻路径地图与事件弹窗。</p>
+    </header>
+
+    <section class="card">
+      <label for="jsonInput">点位 JSON（[{lat,lng,title,desc}]）</label>
+      <textarea id="jsonInput" rows="8"></textarea>
+      <div class="actions">
+        <button id="renderBtn" type="button">渲染地图</button>
+        <label class="export-config" for="exportScale">
+          导出倍率
+          <select id="exportScale">
+            <option value="2">2x（高清）</option>
+            <option value="3" selected>3x（超清）</option>
+            <option value="4">4x（海报）</option>
+          </select>
+        </label>
+        <button id="exportBtn" type="button">导出高清 PNG</button>
+      </div>
+      <p id="status" aria-live="polite">状态: 等待渲染</p>
+    </section>
+
+    <section class="card">
+      <div id="map" class="map"></div>
+    </section>
+  </main>
+  <script src="https://cdn.jsdelivr.net/npm/leaflet@1.9.4/dist/leaflet.js" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js" crossorigin="anonymous"></script>
+  <script src="./pm-metrics.js" defer></script>
+<script src="./app.js" defer></script>
+
+  <!-- Privacy Notice -->
+  <div style="text-align:center;padding:12px 16px;font-size:12px;color:#888;border-top:1px solid #eee;margin-top:24px;">
+    🔒 隐私提示：本工具所有数据处理均在您的浏览器本地完成，不会上传任何数据至服务器。
+  </div>
+
+  <!-- Cross-Project Navigation -->
+  <nav style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;font-size:13px;border-top:1px solid #e5e5e5;margin-top:16px;color:#666;">
+    <a href="https://yuuqq.github.io/_codex/" style="text-decoration:none;">📋 工具箱导航</a>
+    <span style="opacity:.4">P15</span>
+  </nav>
+</body>
+</html>
