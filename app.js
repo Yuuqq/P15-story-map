@@ -5,9 +5,11 @@ const exportScale = document.getElementById("exportScale");
 const statusEl = document.getElementById("status");
 
 const SAMPLE = [
-  { lat: 31.2304, lng: 121.4737, title: "起点：新闻发布会", desc: "事件首次通报。" },
-  { lat: 31.2181, lng: 121.4455, title: "现场：受影响社区", desc: "居民集中反馈诉求。" },
-  { lat: 31.2001, lng: 121.4302, title: "终点：应急指挥部", desc: "后续处置部署。" }
+  { lat: 10.7626, lng: 106.6601, title: "出发地 (胡志明港)", desc: "AIS 历史数据显示，涉案远洋渔船 'Sea Hunter' 于 3 月 5 日离开港口，申报目的地为北太平洋。" },
+  { lat: 0.1, lng: 120.5, title: "AIS 信号消失点 (苏拉威西海)", desc: "3 月 12 日，该船在穿越印尼群岛时故意关闭了自动识别系统 (AIS)，进入'黑暗航行'模式以躲避监管。" },
+  { lat: -5.4, lng: 104.2, title: "VIIRS 卫星灯光异常捕获", desc: "3 月 18 日，通过调用 VIIRS 夜间灯光卫星数据，调查人员在巽他海峡外侧发现一艘亮度极高的不明渔船，轨迹与丢失的 'Sea Hunter' 吻合。" },
+  { lat: -12.3, lng: 85.1, title: "公海非法转运 (Vessel Spoofing)", desc: "4 月 2 日，Planet Labs 高分辨率卫星影像清晰拍到该船正与一艘冷藏运输船进行海上非法转运 (Transshipment)。" },
+  { lat: 1.3521, lng: 103.8198, title: "终点渔获卸货 (新加坡港)", desc: "4 月 20 日，冷藏运输船抵达港口。调查记者通过卧底采访供应链，最终核实这批非法捕捞的海产品流入了国际市场。" }
 ];
 jsonInput.value = JSON.stringify(SAMPLE, null, 2);
 
@@ -15,9 +17,92 @@ const mapEl = document.getElementById("map");
 let map = null;
 let markerLayer = null;
 let polyline = null;
+let tileLayer = null;
 
 function setStatus(text) {
   statusEl.textContent = `状态: ${text}`;
+}
+
+function tileXYToLatLng(x, y, z) {
+  const scale = 2 ** z;
+  const lng = (x / scale) * 360 - 180;
+  const n = Math.PI - (2 * Math.PI * y) / scale;
+  const lat = (180 / Math.PI) * Math.atan(Math.sinh(n));
+  return { lat, lng };
+}
+
+function formatAxisLabel(value, positive, negative) {
+  if (!Number.isFinite(value)) return "?";
+  return `${Math.abs(value).toFixed(1)}°${value >= 0 ? positive : negative}`;
+}
+
+function createCoordinateGridLayer(L) {
+  const layer = L.gridLayer({
+    tileSize: 256,
+    updateWhenIdle: true,
+    keepBuffer: 1
+  });
+
+  layer.createTile = function createTile(coords) {
+    const tile = document.createElement("canvas");
+    const size = this.getTileSize();
+    tile.width = size.x;
+    tile.height = size.y;
+    const ctx = tile.getContext("2d");
+
+    if (!ctx) return tile;
+
+    const nw = tileXYToLatLng(coords.x, coords.y, coords.z);
+    const se = tileXYToLatLng(coords.x + 1, coords.y + 1, coords.z);
+    const center = tileXYToLatLng(coords.x + 0.5, coords.y + 0.5, coords.z);
+
+    ctx.fillStyle = "#eaf4ff";
+    ctx.fillRect(0, 0, size.x, size.y);
+    ctx.strokeStyle = "rgba(63, 98, 145, 0.35)";
+    ctx.lineWidth = 1;
+    ctx.strokeRect(0.5, 0.5, size.x - 1, size.y - 1);
+
+    ctx.strokeStyle = "rgba(63, 98, 145, 0.18)";
+    ctx.setLineDash([5, 5]);
+    for (let i = 1; i < 4; i += 1) {
+      const x = (size.x / 4) * i;
+      const y = (size.y / 4) * i;
+      ctx.beginPath();
+      ctx.moveTo(x, 0);
+      ctx.lineTo(x, size.y);
+      ctx.moveTo(0, y);
+      ctx.lineTo(size.x, y);
+      ctx.stroke();
+    }
+    ctx.setLineDash([]);
+
+    ctx.fillStyle = "#315985";
+    ctx.font = "700 15px sans-serif";
+    ctx.fillText(`Z${coords.z} · 本地经纬网`, 12, 24);
+
+    ctx.font = "12px sans-serif";
+    ctx.fillStyle = "#466b93";
+    ctx.fillText(`${formatAxisLabel(nw.lat, "N", "S")} ~ ${formatAxisLabel(se.lat, "N", "S")}`, 12, 46);
+    ctx.fillText(`${formatAxisLabel(nw.lng, "E", "W")} ~ ${formatAxisLabel(se.lng, "E", "W")}`, 12, 64);
+
+    ctx.fillStyle = "rgba(17, 24, 39, 0.7)";
+    ctx.font = "600 13px sans-serif";
+    ctx.fillText(`中心 ${center.lat.toFixed(2)}, ${center.lng.toFixed(2)}`, 12, size.y - 18);
+
+    return tile;
+  };
+
+  return layer;
+}
+
+function markerStyle(index, total) {
+  if (index === 0) {
+    return { radius: 8, color: "#0f766e", fillColor: "#14b8a6", fillOpacity: 0.95, weight: 2 };
+  }
+  if (index === total - 1) {
+    return { radius: 8, color: "#9a3412", fillColor: "#f97316", fillOpacity: 0.95, weight: 2 };
+  }
+  return { radius: 7, color: "#1d4ed8", fillColor: "#60a5fa", fillOpacity: 0.9, weight: 2 };
 }
 
 function ensureMap() {
@@ -25,14 +110,9 @@ function ensureMap() {
   if (!window.L || typeof window.L.map !== "function") return false;
 
   const L = window.L;
-  map = L.map("map", { preferCanvas: true });
-  L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
-    maxZoom: 19,
-    updateWhenIdle: true,
-    keepBuffer: 1,
-    crossOrigin: true,
-    attribution: "&copy; OpenStreetMap contributors"
-  }).addTo(map);
+  map = L.map("map", { preferCanvas: true, worldCopyJump: true });
+  tileLayer = createCoordinateGridLayer(L);
+  tileLayer.addTo(map);
 
   markerLayer = L.layerGroup().addTo(map);
   return true;
@@ -95,7 +175,7 @@ function renderPoints(points) {
   points.forEach((p, i) => {
     const lat = Number(p.lat);
     const lng = Number(p.lng);
-    const marker = L.marker([lat, lng]).addTo(markerLayer);
+    const marker = L.circleMarker([lat, lng], markerStyle(i, points.length)).addTo(markerLayer);
 
     const popup = document.createElement("div");
     const title = document.createElement("strong");
@@ -103,7 +183,12 @@ function renderPoints(points) {
     const br = document.createElement("br");
     const desc = document.createElement("span");
     desc.textContent = String(p.desc ?? "");
-    popup.append(title, br, desc);
+    const coords = document.createElement("div");
+    coords.textContent = `${lat.toFixed(4)}, ${lng.toFixed(4)}`;
+    coords.style.marginTop = "6px";
+    coords.style.color = "#47627f";
+    coords.style.fontSize = "12px";
+    popup.append(title, br, desc, coords);
 
     marker.bindPopup(popup);
     latlngs.push([lat, lng]);
@@ -133,6 +218,10 @@ function waitForMapTiles(timeoutMs = 9000) {
   if (!tiles.length) return Promise.resolve();
 
   const waitOne = tile => new Promise(resolve => {
+    if (tile instanceof HTMLCanvasElement) {
+      resolve();
+      return;
+    }
     if (tile.complete && tile.naturalWidth > 0) {
       resolve();
       return;
@@ -195,7 +284,7 @@ renderBtn.addEventListener("click", () => {
     const valid = points.every(p => Number.isFinite(Number(p.lat)) && Number.isFinite(Number(p.lng)));
     if (!valid) throw new Error("每个点需要有效 lat/lng");
     renderPoints(points);
-    if (ensureMap()) setStatus(`渲染完成，共 ${points.length} 个点位`);
+    if (ensureMap()) setStatus(`渲染完成，共 ${points.length} 个点位（本地经纬网底图）`);
     else setStatus("地图依赖未加载（Leaflet），已输出列表预览");
   } catch (err) {
     setStatus(`渲染失败: ${err.message}`);
