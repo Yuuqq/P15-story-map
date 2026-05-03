@@ -3,6 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#eef6f2">
+  <meta name="color-scheme" content="light dark">
   <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📰</text></svg>" />
   <title>P15 地理新闻故事地图</title>
   <link rel="stylesheet" href="../shared/vendor/leaflet.css" />
@@ -24,7 +26,8 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
 </style>
 </head>
 <body>
-  <main aria-label="主内容区域" class="app">
+  <a href="#main" class="skip-link">跳到主内容 / Skip to main content</a>
+  <main id="main" aria-label="主内容区域" class="app">
     <header class="hero">
       <h1>地理新闻故事地图</h1>
       <p>输入坐标点 JSON，自动生成新闻路径地图与事件弹窗。</p>
