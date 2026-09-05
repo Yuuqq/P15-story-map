@@ -37,7 +37,7 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
       <label for="jsonInput">点位 JSON（[{lat,lng,title,desc}]）</label>
       <textarea id="jsonInput" rows="8"></textarea>
       <div class="actions">
-        <button id="renderBtn" type="button" aria-label="render">渲染地图</button>
+        <button id="renderBtn" type="button">渲染地图</button>
         <label class="export-config" for="exportScale">
           导出倍率
           <select id="exportScale">
@@ -46,7 +46,7 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
             <option value="4">4x（海报）</option>
           </select>
         </label>
-        <button id="exportBtn" type="button" aria-label="export">导出高清 PNG</button>
+        <button id="exportBtn" type="button">导出高清 PNG</button>
       </div>
       <p id="status" role="status" aria-live="polite">状态: 等待渲染</p>
     </section>
@@ -56,6 +56,8 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
     </section>
   </main>
   <script src="./pm-metrics.js" defer></script>
+<script src="../shared/vendor/leaflet.js" defer></script>
+<script src="../shared/vendor/html2canvas.min.js" defer></script>
 <script src="./app.js" defer></script>
 
   <!-- Privacy Notice -->
