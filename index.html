@@ -9,6 +9,7 @@
   <title>P15 地理新闻故事地图</title>
   <link rel="stylesheet" href="../shared/vendor/leaflet.css" />
     <link rel="stylesheet" href="../shared/design-tokens.css" />
+<link rel="stylesheet" href="https://yuuqq.github.io/shared/design-tokens.css" />
 <link rel="stylesheet" href="./styles.css" />
   <meta name="description" content="地理新闻故事地图。P15 地理新闻故事地图" />
   <meta property="og:title" content="P15 地理新闻故事地图" />
@@ -33,7 +34,7 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
       <p>输入坐标点 JSON，自动生成新闻路径地图与事件弹窗。</p>
     </header>
 
-    <section class="card"><details class="teach-card" open><summary>🎓 叙事地图与现场报道</summary><p>叙事地图（Story Map）是将新闻事件的地理位置与叙事结合的可视化方式。记者可以标注采访现场、事件发生地、数据采集点，帮助读者理解事件的空间分布和发展轨迹。</p></details></section>
+    <section class="card"><details class="teach-card"><summary>🎓 叙事地图与现场报道</summary><p>叙事地图（Story Map）是将新闻事件的地理位置与叙事结合的可视化方式。记者可以标注采访现场、事件发生地、数据采集点，帮助读者理解事件的空间分布和发展轨迹。</p></details></section>
 
     <section class="card">
       <label for="jsonInput">点位 JSON（[{lat,lng,title,desc}]）</label>
@@ -57,8 +58,8 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
       <div id="map" class="map"></div>
     </section>
   </main>
-  <script src="../shared/vendor/leaflet.js"></script>
-  <script src="../shared/vendor/html2canvas.min.js"></script>
+  <script src="../shared/vendor/leaflet.js" onerror="this.onerror=null;this.src='https://yuuqq.github.io/shared/vendor/leaflet.js'"></script>
+  <script src="../shared/vendor/html2canvas.min.js" onerror="this.onerror=null;this.src='https://yuuqq.github.io/shared/vendor/html2canvas.min.js'"></script>
   <script src="./pm-metrics.js" defer></script>
 <script src="./app.js" defer></script>
 
@@ -72,7 +73,21 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
     <a href="https://yuuqq.github.io/journalism-toolbox/" style="text-decoration:none;">📋 工具箱导航</a>
     <span style="opacity:.4">P15</span>
   </nav>
-  <script src="../shared/releases/v2.6/loader.js" data-modules="dark,cmd,toast,onboarding,pedagogy-p1,pedagogy-p2,nav,kbd"></script>
+  <script>
+(function () {
+  var modules = "dark,cmd,toast,onboarding,pedagogy-p1,pedagogy-p2,nav,kbd";
+  var s = document.createElement("script");
+  s.src = "../shared/releases/v2.6/loader.js";
+  s.setAttribute("data-modules", modules);
+  s.onerror = function () {
+    var t = document.createElement("script");
+    t.src = "https://yuuqq.github.io/shared/releases/v2.6/loader.js";
+    t.setAttribute("data-modules", modules);
+    document.body.appendChild(t);
+  };
+  document.body.appendChild(s);
+})();
+</script>
   <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}</script>
 
 </body>
