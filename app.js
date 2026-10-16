@@ -320,29 +320,26 @@ renderPoints(SAMPLE);
   var demoBtn = document.createElement('button');
   demoBtn.type = 'button';
   demoBtn.textContent = '🗺️ 加载示例新闻地图';
-  demoBtn.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:999;padding:10px 16px;border:2px dashed var(--accent,#c7491f);border-radius:8px;background:var(--paper,#fff);color:var(--accent,#c7491f);font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);';
+  // Sit left of the shared ⌘K fab (44px at right:16px) so the two controls do not overlap.
+  demoBtn.style.cssText = 'position:fixed;bottom:20px;right:72px;z-index:999;width:max-content;max-width:calc(100vw - 96px);padding:10px 16px;border:2px dashed var(--accent,#c7491f);border-radius:8px;background:var(--paper,#fff);color:var(--accent,#c7491f);font-weight:700;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,0.2);';
   document.body.appendChild(demoBtn);
   demoBtn.onclick = function() {
-    var nameInput = document.querySelector('input[id*="name"]') || document.querySelector('input[type="text"]');
-    var latInput = document.querySelector('input[id*="lat"]');
-    var lngInput = document.querySelector('input[id*="lng"]') || document.querySelector('input[id*="lon"]');
-    var descInput = document.querySelector('textarea') || document.querySelector('input[id*="desc"]');
-    var addBtn = document.querySelector('[id*="add"]') || document.querySelectorAll('button')[1];
-    if (!nameInput || !addBtn) return;
+    if (!jsonInput || !renderBtn) return;
     var points = [
       {name:'北京 - 全国两会', lat:'39.9042', lng:'116.4074', desc:'2024年全国两会在人民大会堂举行'},
       {name:'上海 - 进博会', lat:'31.2304', lng:'121.4737', desc:'第七届中国国际进口博览会'},
       {name:'深圳 - 科技峰会', lat:'22.5431', lng:'114.0579', desc:'全球人工智能与新闻业发展论坛'},
       {name:'武汉 - 防汛报道', lat:'30.5928', lng:'114.3055', desc:'长江流域汛期特别报道'},
       {name:'成都 - 文化调查', lat:'30.5728', lng:'104.0668', desc:'非物质文化遗产保护深度调查'}
-    ];
-    points.forEach(function(p) {
-      if (nameInput) nameInput.value = p.name;
-      if (latInput) latInput.value = p.lat;
-      if (lngInput) lngInput.value = p.lng;
-      if (descInput) { descInput.tagName === 'TEXTAREA' ? descInput.value = p.desc : descInput.value = p.desc; }
-      addBtn.click();
+    ].map(function(p) {
+      return { lat: Number(p.lat), lng: Number(p.lng), title: p.name, desc: p.desc };
     });
+    jsonInput.value = JSON.stringify(points, null, 2);
+    renderBtn.click();
+    if ((statusEl.textContent || '').indexOf('渲染失败') !== -1) {
+      demoBtn.textContent = '示例加载失败';
+      return;
+    }
     demoBtn.textContent = '✅ 已加载 5 个新闻地点';
     setTimeout(function(){ demoBtn.remove(); }, 3000);
   };

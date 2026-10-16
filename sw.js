@@ -4,8 +4,8 @@
  *
  * 策略：
  * 1. 安装时预缓存当前项目的核心文件
- * 2. 缓存优先 (Cache-First) 获取静态资源
- * 3. 网络优先 (Network-First) 获取 API 请求
+ * 2. 同源 GET：缓存优先，并在后台刷新 (stale-while-revalidate)
+ * 3. 跨域请求不拦截。本工具底图是本地 canvas 经纬网，不请求外部瓦片
  * 4. 离线回退页面
  */
 const CACHE_NAME = "journalism-tool-v1";
@@ -46,11 +46,11 @@ self.addEventListener("activate", (event) => {
   self.clients.claim();
 });
 
-// Fetch: Cache-First for same-origin, Network-First for external
+// Fetch: cache-first for same-origin GET. Cross-origin requests are not intercepted.
 self.addEventListener("fetch", (event) => {
   const url = new URL(event.request.url);
 
-  // Skip non-GET and cross-origin API calls
+  // Skip non-GET and any cross-origin request.
   if (event.request.method !== "GET") return;
   if (url.origin !== self.location.origin) return;
 
