@@ -1,233 +1,216 @@
-:root {
-  --bg: #F0E6CF;
-  --card: #F7EFDA;
-  --line: #D3C4A0;
-  --ink: #3A2E20;
-}
+/* P15 layout only. Colour, type, radius, and motion come from shared tokens. */
 
 * { box-sizing: border-box; }
 
 body {
   margin: 0;
   color: var(--ink);
-  font-family: "Noto Sans SC", "Microsoft YaHei", "PingFang SC", sans-serif;
+  font-family: var(--font-sans);
   background: var(--bg);
 }
 
-.app { max-width: 1100px; margin: 0 auto; padding: 16px; }
-.hero, .card { background: var(--card); border: 1px solid var(--line); border-radius: 6px; padding: 14px; margin-bottom: 12px; position: relative; }
-.hero h1 { margin: 0 0 8px; }
-label { display: block; font-weight: 700; margin-bottom: 6px; }
-textarea { width: 100%; border: 1px solid var(--line); border-radius: 6px; padding: 10px; font: inherit; }
-.actions { margin-top: 10px; display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+.app { max-width: 1100px; margin: 0 auto; padding: var(--space-md); }
+
+.hero,
+.card {
+  background: var(--card);
+  border: var(--rule-hair) solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 14px;
+  margin-bottom: 12px;
+  position: relative;
+}
+
+.hero h1 { margin: 0 0 var(--space-sm); font-family: var(--font-serif); }
+.hero p { margin: 0; }
+
+label {
+  display: block;
+  font-family: var(--font-sans);
+  font-weight: 700;
+  letter-spacing: 0;
+  margin-bottom: 6px;
+}
+
+textarea {
+  width: 100%;
+  border: var(--rule-hair) solid var(--line);
+  border-radius: var(--radius-md);
+  padding: 10px;
+  font: inherit;
+  background: var(--paper-hi);
+  color: var(--ink);
+}
+
+.actions { margin-top: 10px; display: flex; gap: var(--space-sm); flex-wrap: wrap; align-items: center; }
+
 button {
-  border: 0;
-  border-radius: 4px;
+  border: var(--rule-hair) solid var(--accent);
+  border-radius: var(--radius-md);
   padding: 8px 14px;
-  color: #fff;
+  min-height: 44px;
+  color: var(--accent-ink);
   cursor: pointer;
   font: inherit;
-  background: linear-gradient(135deg, #2f8f63, #1e6846);
+  background: var(--accent);
+  box-shadow: none;
+  animation: none;
 }
+
+/* Tool actions only. Shared button rules include :not(#id), so this needs an id too. */
+.app button#renderBtn:not(#darkToggleBtn),
+.app button#exportBtn:not(#darkToggleBtn) {
+  background: var(--accent) !important;
+  background-image: none !important;
+  color: var(--accent-ink) !important;
+  border-color: var(--accent) !important;
+  border-radius: var(--radius-md) !important;
+  box-shadow: none !important;
+  animation: none !important;
+  min-height: 44px;
+}
+
+.app button#renderBtn:not(#darkToggleBtn):hover,
+.app button#exportBtn:not(#darkToggleBtn):hover {
+  background: var(--accent-hover) !important;
+  color: var(--accent-ink) !important;
+  transform: none;
+}
+
 .export-config {
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  border: 1px solid var(--line);
-  border-radius: 4px;
+  border: var(--rule-hair) solid var(--line);
+  border-radius: var(--radius-sm);
   padding: 6px 10px;
-  background: #f6fffa;
+  min-height: 44px;
+  background: var(--card);
+  color: var(--ink);
   font-weight: 600;
 }
+
 .export-config select {
   font: inherit;
-  border: 1px solid var(--line);
-  border-radius: 4px;
+  border: var(--rule-hair) solid var(--line);
+  border-radius: var(--radius-sm);
   padding: 2px 8px;
-  background: #fff;
-}
-.map { height: 62vh; border-radius: 6px; overflow: hidden; }
-
-/* === CSS Professor Upgrade (Round 20) === */
-
-/* Card system */
-.card, [class*="card"], section, .panel, .container > div { transition: transform 0.2s ease, box-shadow 0.2s ease; }
-.card:hover, [class*="card"]:hover { transform: translateY(-2px); }
-
-/* Button polish */
-button, .btn, [type="submit"], [type="button"] {
-  transition: all 0.2s ease;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-}
-button:hover, .btn:hover, [type="submit"]:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
-}
-button:active, .btn:active { transform: scale(0.98); }
-
-/* Input polish */
-input, textarea, select {
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
-}
-input:focus, textarea:focus, select:focus {
-  box-shadow: 0 0 0 3px rgba(199,73,31,0.15);
+  background: var(--paper-hi);
+  color: var(--ink);
 }
 
-/* Link hover */
-a { transition: color 0.15s ease; }
+.map { height: 62vh; border-radius: var(--radius-md); overflow: hidden; }
 
-/* Focus outline */
-:focus-visible { outline: 2px solid var(--accent, #c7491f); outline-offset: 2px; }
+/* Shared card hover lifts the section; keep the Leaflet canvas in place. */
+.app .card:has(.map):hover { transform: none; }
 
-/* Mobile responsive */
+.tool-teach p {
+  margin: 0.4em 0 0;
+  color: var(--ink);
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+}
+
+/* Shared link rules paint every anchor cinnabar and dotted-underlined. */
+header.tool-chrome a.tool-chrome__mark:not(.btn):not(.map-link):not(.open-btn):not(.chip):not(.pill):not(.gnav-item) {
+  color: var(--ink) !important;
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+  text-transform: none;
+  text-decoration: none !important;
+  text-decoration-line: none !important;
+}
+
+.tool-chrome__id {
+  font-family: var(--font-sans);
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+textarea:focus-visible,
+select:focus-visible,
+button:focus-visible,
+summary:focus-visible,
+a:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  transition: none;
+}
+
 @media (max-width: 600px) {
-  body { padding: 8px; }
-  .app, main, .container { padding: 12px; }
+  .app { padding: 12px; }
   h1 { font-size: 1.5rem; }
-  h2 { font-size: 1.2rem; }
-  button, .btn { width: auto; max-width: 100%; }
 }
 
-/* === Dark Mode Override (auto-generated) === */
-:root[data-theme="dark"] {
-  --bg: #1a1a2e;
-  --card: #242438;
-  --line: #3a3a50;
-  --ink: #e8e8f0;
-}
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]) {
-  --bg: #1a1a2e;
-  --card: #242438;
-  --line: #3a3a50;
-  --ink: #e8e8f0;
-  }
-}
-
-/* === CSS Professor Animation Upgrade (Round 22) === */
-
-/* Page entrance */
-@keyframes fadeInUp {
-  from { opacity: 0; transform: translateY(16px); }
-  to { opacity: 1; transform: translateY(0); }
-}
-.app, main, body > .container { animation: fadeInUp 0.4s ease-out; }
-
-/* Staggered card entrance */
-@keyframes cardReveal {
-  from { opacity: 0; transform: translateY(12px) scale(0.98); }
-  to { opacity: 1; transform: translateY(0) scale(1); }
-}
-.card, [class*="card"], .mission-card, .module-card, .stat-card {
-  animation: cardReveal 0.35s ease-out both;
-}
-.card:nth-child(2), [class*="card"]:nth-child(2) { animation-delay: 0.05s; }
-.card:nth-child(3), [class*="card"]:nth-child(3) { animation-delay: 0.1s; }
-.card:nth-child(4), [class*="card"]:nth-child(4) { animation-delay: 0.15s; }
-.card:nth-child(5), [class*="card"]:nth-child(5) { animation-delay: 0.2s; }
-
-/* Subtle pulse for primary buttons */
-@keyframes btnPulse {
-  0%, 100% { box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-  50% { box-shadow: 0 2px 12px rgba(199,73,31,0.25); }
-}
-button[id*="Btn"]:not(:disabled), .btn-primary {
-  animation: btnPulse 3s ease-in-out infinite;
-}
-button:disabled { animation: none; opacity: 0.6; }
-
-/* Smooth height transitions for collapsible sections */
-details { transition: all 0.2s ease; }
-details[open] summary { margin-bottom: 8px; }
-
-/* Tooltip fade */
-[title] { position: relative; }
-
-/* Progress bar animation */
-@keyframes progressFill {
-  from { width: 0; }
-}
-.mc-bar-fill, .mod-progress-fill, .bar-fill, progress::-webkit-progress-value {
-  animation: progressFill 0.6s ease-out;
-}
-
-/* Reduced motion preference */
 @media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    animation-iteration-count: 1 !important;
-    transition-duration: 0.01ms !important;
+  .card:hover,
+  button:hover,
+  .app .card:has(.map):hover {
+    transform: none;
   }
 }
 
-/* === Loading & Feedback States === */
-@keyframes spin { to { transform: rotate(360deg); } }
-.btn-loading { position: relative; pointer-events: none; opacity: 0.7; }
-.btn-loading::after {
-  content: '';
-  position: absolute;
-  right: 8px; top: 50%;
-  width: 14px; height: 14px;
-  margin-top: -7px;
-  border: 2px solid transparent;
-  border-top-color: currentColor;
-  border-radius: 50%;
-  animation: spin 0.6s linear infinite;
+@media print {
+  body {
+    background: var(--print-paper) !important;
+    color: var(--print-ink) !important;
+  }
+  a { color: var(--print-ink) !important; }
+  .hero,
+  .card,
+  .tool-teach {
+    background: var(--print-paper) !important;
+    box-shadow: none !important;
+  }
 }
-.toast-msg {
-  position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%);
-  background: #333; color: #fff; padding: 10px 20px; border-radius: 6px;
-  font-size: 0.9rem; z-index: 9999; opacity: 0;
-  transition: opacity 0.3s ease;
-}
-.toast-msg.show { opacity: 1; }
+
 /* === Parchment edge polish (local leftovers + onboarding inject) === */
 .flow-guide {
-  border-radius: 6px !important;
+  border-radius: var(--radius-md) !important;
   overflow: visible !important;
-  background: var(--paper-3, #EFE4C6) !important;
-  box-shadow: var(--shadow-card, 0 2px 14px rgba(107, 90, 68, 0.16)) !important;
+  background: var(--paper-3, var(--card)) !important;
+  box-shadow: var(--shadow-card) !important;
 }
 .flow-guide-btn {
-  border-radius: 4px !important;
+  border-radius: var(--radius-sm) !important;
   width: auto !important;
   max-width: 100%;
   overflow: visible !important;
 }
 .flow-guide-btn.primary {
-  background: var(--ink, #3A2E20) !important;
-  border-color: var(--ink, #3A2E20) !important;
-  color: var(--paper-hi, #F7EFDA) !important;
+  background: var(--ink) !important;
+  border-color: var(--ink) !important;
+  color: var(--paper-hi) !important;
 }
-.onboarding-ring { border-radius: 6px !important; }
+.onboarding-ring { border-radius: var(--radius-md) !important; }
 .onboarding-tip {
-  border-radius: 6px !important;
-  background: var(--paper-hi, #F7EFDA) !important;
-  color: var(--ink, #3A2E20) !important;
+  border-radius: var(--radius-md) !important;
+  background: var(--paper-hi) !important;
+  color: var(--ink) !important;
 }
-.onboarding-tip-actions button { border-radius: 4px !important; }
+.onboarding-tip-actions button { border-radius: var(--radius-sm) !important; }
 .dropzone,
 .drop-zone {
-  background: var(--paper-hi, #F7EFDA) !important;
-  border-color: var(--line, #D3C4A0) !important;
-  color: var(--ink, #3A2E20) !important;
-  border-radius: 6px !important;
+  background: var(--paper-hi) !important;
+  border-color: var(--line) !important;
+  color: var(--ink) !important;
+  border-radius: var(--radius-md) !important;
 }
 .note,
 .hint,
 .muted {
-  color: var(--ink-secondary, #6E5B41) !important;
+  color: var(--ink-secondary) !important;
 }
-.toast-msg { border-radius: 6px !important; }
+.toast-msg { border-radius: var(--radius-md) !important; }
 .table-wrap,
 .chart-wrap,
 textarea,
 select,
 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="file"]) {
-  border-radius: 6px !important;
+  border-radius: var(--radius-md) !important;
 }
-.map { border-radius: 6px !important; }
-.box { border-radius: 4px !important; }
+.map { border-radius: var(--radius-md) !important; }
+.box { border-radius: var(--radius-sm) !important; }
 .pedagogy-panel,
 .pedagogy-body,
 .pedagogy-toggle {
