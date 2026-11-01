@@ -3,35 +3,45 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📰</text></svg>" />
+  <link rel="icon" href="./favicon.svg" type="image/svg+xml" />
   <title>P15 地理新闻故事地图</title>
   <link rel="stylesheet" href="../shared/vendor/leaflet.css" />
-    <link rel="stylesheet" href="../shared/design-tokens.css" />
-<link rel="stylesheet" href="./modern-styles.css" />
-<link rel="stylesheet" href="./styles.css" />
-<meta name="description" content="地理新闻故事地图。P15 地理新闻故事地图" />
+  <link rel="stylesheet" href="../shared/design-tokens.css" />
+  <link rel="stylesheet" href="../shared/modern-styles.css" />
+  <link rel="stylesheet" href="../shared/tool-chrome.css" />
+  <link rel="stylesheet" href="./styles.css" />
+  <meta name="description" content="地理新闻故事地图。P15 地理新闻故事地图" />
   <meta property="og:title" content="P15 地理新闻故事地图" />
   <meta property="og:description" content="地理新闻故事地图 — 前端纯静态新闻工具" />
   <meta property="og:type" content="website" />
   <meta property="og:url" content="https://yuuqq.github.io/P15-story-map/" />
   <link rel="manifest" href="./manifest.json" />
-<style media="print">
-.gnav,.pedagogy-panel,.explore-section,[class*="dark-toggle"],button[aria-label]{display:none!important}
-body{background:#fff!important;color:#000!important;font-size:11pt}
-.app,main,.container{box-shadow:none!important;border:none!important;padding:0!important}
-a{color:#000!important;text-decoration:underline}
-a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
-@page{margin:2cm}
-</style>
+  <style media="print">
+    .gnav,.pedagogy-panel,.explore-section,[class*="dark-toggle"],button[aria-label]{display:none!important}
+    body{background:var(--print-paper)!important;color:var(--print-ink)!important;font-size:11pt}
+    .app,main,.container{box-shadow:none!important;border:none!important;padding:0!important}
+    a{color:var(--print-ink)!important;text-decoration:underline}
+    a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:color-mix(in srgb, var(--print-ink) 65%, var(--print-paper))}
+    @page{margin:2cm}
+  </style>
 </head>
 <body>
   <main aria-label="主内容区域" class="app">
+    <header class="tool-chrome" data-tool-id="P15">
+      <a class="tool-chrome__mark" href="../P00-dashboard/">新闻实验工具</a>
+      <span class="tool-chrome__id">P15</span>
+    </header>
+
     <header class="hero">
       <h1>地理新闻故事地图</h1>
       <p>输入坐标点 JSON，自动生成新闻路径地图与事件弹窗。</p>
     </header>
 
-    <section class="card"><details class="teach-card" open><summary>🎓 叙事地图与现场报道</summary><p>叙事地图（Story Map）是将新闻事件的地理位置与叙事结合的可视化方式。记者可以标注采访现场、事件发生地、数据采集点，帮助读者理解事件的空间分布和发展轨迹。</p></details></section>
+    <details class="tool-teach">
+      <summary>如何使用</summary>
+      <p>叙事地图（Story Map）是将新闻事件的地理位置与叙事结合的可视化方式。记者可以标注采访现场、事件发生地、数据采集点，帮助读者理解事件的空间分布和发展轨迹。</p>
+      <p>在文本框中粘贴点位 JSON（[{lat,lng,title,desc}]），点击「渲染地图」生成路径与事件弹窗；需要留存时再导出高清 PNG。底图为本地经纬网。</p>
+    </details>
 
     <section class="card">
       <label for="jsonInput">点位 JSON（[{lat,lng,title,desc}]）</label>
@@ -54,33 +64,24 @@ a[href]::after{content:" (" attr(href) ")";font-size:9pt;color:#666}
     <section class="card">
       <div id="map" class="map"></div>
     </section>
+
+    <footer class="tool-footer">
+      数据边界以附录 A 为准：能在本机完成的计算不主动外发；示例数据仅供课堂；本工具输出不得单独当作结论。
+      <a href="../P00-dashboard/">返回工具箱</a>
+    </footer>
   </main>
   <script src="./pm-metrics.js" defer></script>
-<script src="../shared/vendor/leaflet.js" defer></script>
-<script src="../shared/vendor/html2canvas.min.js" defer></script>
-<script src="./app.js" defer></script>
-
-  <!-- Privacy Notice -->
-  <div style="text-align:center;padding:12px 16px;font-size:12px;color:#888;border-top:1px solid #eee;margin-top:24px;">
-    🔒 隐私提示：本工具所有数据处理均在您的浏览器本地完成，不会上传任何数据至服务器。
-  </div>
-
-  <!-- Cross-Project Navigation -->
-  <nav aria-label="工具箱导航" style="display:flex;justify-content:space-between;align-items:center;padding:10px 16px;font-size:13px;border-top:1px solid #e5e5e5;margin-top:16px;color:#666;">
-    <a href="https://yuuqq.github.io/journalism-toolbox/" style="text-decoration:none;">📋 工具箱导航</a>
-    <span style="opacity:.4">P15</span>
-  </nav>
-
-<script src="../shared/dark-toggle.js" defer></script>
-<script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}</script>
-<script src="../shared/cmd-palette.js" defer></script>
-<script src="../shared/toast.js" defer></script>
-<script src="../shared/onboarding.js" defer></script>
-<script src="../shared/pedagogy-data-p1.js" defer></script>
-<script src="../shared/pedagogy-data-p2.js" defer></script>
-<script src="../shared/global-nav.js" defer></script>
-<script src="../shared/kbd-hints.js" defer></script>
+  <script src="../shared/vendor/leaflet.js" defer></script>
+  <script src="../shared/vendor/html2canvas.min.js" defer></script>
+  <script src="./app.js" defer></script>
+  <script src="../shared/dark-toggle.js" defer></script>
+  <script>if('serviceWorker' in navigator){navigator.serviceWorker.register('./sw.js').catch(()=>{})}</script>
+  <script src="../shared/cmd-palette.js" defer></script>
+  <script src="../shared/toast.js" defer></script>
+  <script src="../shared/onboarding.js" defer></script>
+  <script src="../shared/pedagogy-data-p1.js" defer></script>
+  <script src="../shared/pedagogy-data-p2.js" defer></script>
+  <script src="../shared/global-nav.js" defer></script>
+  <script src="../shared/kbd-hints.js" defer></script>
 </body>
 </html>
-
-
